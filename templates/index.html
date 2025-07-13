@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docling File Processor</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>📄 Docling File Processor</h1>
+        <p class="subtitle">Upload any file type and get structured JSON data using Docling</p>
+        
+        <div class="upload-area" id="uploadArea">
+            <div class="upload-icon">📁</div>
+            <div class="upload-text">Drag and drop your file here</div>
+            <div class="upload-text">or</div>
+            <button class="btn" onclick="document.getElementById('fileInput').click()">Choose File</button>
+            <input type="file" id="fileInput" class="file-input" accept="*/*">
+        </div>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Processing your file...</p>
+        </div>
+        
+        <div class="result" id="result"></div>
+        
+        <div class="supported-formats">
+            <strong>Supported Formats:</strong>
+            <div class="format-list">
+                <span class="format-tag">PDF</span>
+                <span class="format-tag">DOCX</span>
+                <span class="format-tag">TXT</span>
+                <span class="format-tag">CSV</span>
+                <span class="format-tag">PPTX</span>
+                <span class="format-tag">XLSX</span>
+                <span class="format-tag">DOC</span>
+                <span class="format-tag">PPT</span>
+                <span class="format-tag">XLS</span>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/static/js/app.js"></script>
+</body>
+</html> 
