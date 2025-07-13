@@ -43,4 +43,9 @@ A FastAPI web application that processes files using Docling and LangChain, stor
 For Render deployment:
 - **Build Command**: `pip install -r requirements.txt`
 - **Start Command**: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
-- **Environment Variable**: `DATABASE_URL=postgresql://postgres1:4gAV8sCmCzkpULhZM5vCEoIBoaPNnszx@dpg-d1q28k8dl3ps739b6ujg-a/docling_db` 
+- **Environment Variables**:
+  ```
+  DATABASE_URL=postgresql://postgres1:4gAV8sCmCzkpULhZM5vCEoIBoaPNnszx@dpg-d1q28k8dl3ps739b6ujg-a/docling_db
+  SECRET_KEY=your-secret-key-here
+  DEBUG=False
+  ``` 

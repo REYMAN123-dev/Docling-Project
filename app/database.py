@@ -8,22 +8,30 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Database configuration - can use either connection string or separate variables
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres1:4gAV8sCmCzkpULhZM5vCEoIBoaPNnszx@dpg-d1q28k8dl3ps739b6ujg-a/docling_db")
+# Database configuration - prioritize DATABASE_URL environment variable
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-# Fallback to separate environment variables if DATABASE_URL not provided
-if not os.getenv("DATABASE_URL"):
-    DB_HOST = os.getenv("DB_HOST", "localhost")
-    DB_PORT = os.getenv("DB_PORT", "5432")
-    DB_NAME = os.getenv("DB_NAME", "docling_db")
-    DB_USER = os.getenv("DB_USER", "postgres")
-    DB_PASSWORD = os.getenv("DB_PASSWORD", "")
+# If DATABASE_URL is not set, use the online database as default
+if not DATABASE_URL:
+    # Use online database as default for production
+    DATABASE_URL = "postgresql://postgres1:4gAV8sCmCzkpULhZM5vCEoIBoaPNnszx@dpg-d1q28k8dl3ps739b6ujg-a.oregon-postgres.render.com/docling_db"
     
-    # URL encode the password to handle special characters
-    encoded_password = urllib.parse.quote_plus(DB_PASSWORD) if DB_PASSWORD else ""
-    
-    # Construct database URL from separate components
-    DATABASE_URL = f"postgresql://{DB_USER}:{encoded_password}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+    # Only use localhost if explicitly set for development
+    DB_HOST = os.getenv("DB_HOST")
+    if DB_HOST and DB_HOST != "localhost":
+        DB_PORT = os.getenv("DB_PORT", "5432")
+        DB_NAME = os.getenv("DB_NAME", "docling_db")
+        DB_USER = os.getenv("DB_USER", "postgres")
+        DB_PASSWORD = os.getenv("DB_PASSWORD", "")
+        
+        # URL encode the password to handle special characters
+        encoded_password = urllib.parse.quote_plus(DB_PASSWORD) if DB_PASSWORD else ""
+        
+        # Construct database URL from separate components
+        DATABASE_URL = f"postgresql://{DB_USER}:{encoded_password}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+
+# Debug: Print the database URL being used (remove this in production)
+print(f"🔗 Using database URL: {DATABASE_URL}")
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
