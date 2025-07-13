@@ -32,8 +32,14 @@ async function handleFile(file) {
     const formData = new FormData();
     formData.append('file', file);
     
+    // Show loading with appropriate message
     loading.style.display = 'block';
+    loading.classList.add('show');
     result.style.display = 'none';
+    
+    // Update loading message to be more specific
+    const loadingText = loading.querySelector('p');
+    loadingText.textContent = 'Checking if file already exists...';
     
     try {
         const response = await fetch('/upload/', {
@@ -44,6 +50,30 @@ async function handleFile(file) {
         const data = await response.json();
         
         if (response.ok) {
+            // Update loading message based on status
+            if (data.status === 'already_available') {
+                loadingText.textContent = 'File found in database, retrieving...';
+            } else {
+                loadingText.textContent = 'Processing file with Docling...';
+            }
+            
+            // Show immediate status feedback
+            const statusClass = data.status === 'already_available' ? 'status-cached' : 'status-new';
+            const statusText = data.status === 'already_available' ? '📋 Retrieved from Database' : '🆕 Newly Processed';
+            const statusEmoji = data.status === 'already_available' ? '🔄' : '✨';
+            
+            // Update loading with status
+            loading.innerHTML = `
+                <div class="spinner"></div>
+                <div class="status-badge ${statusClass}" style="margin: 10px 0;">
+                    ${statusEmoji} ${statusText}
+                </div>
+                <p>${loadingText.textContent}</p>
+            `;
+            
+            // Small delay to show the appropriate loading message
+            await new Promise(resolve => setTimeout(resolve, 800));
+            
             showResult('success', data.message, data);
         } else {
             showResult('error', data.detail || 'An error occurred');
@@ -52,6 +82,9 @@ async function handleFile(file) {
         showResult('error', 'Network error: ' + error.message);
     } finally {
         loading.style.display = 'none';
+        loading.classList.remove('show');
+        // Reset loading message
+        loadingText.textContent = 'Processing your file...';
     }
 }
 
@@ -61,11 +94,20 @@ function showResult(type, message, data = null) {
     
     let content = `<h3>${message}</h3>`;
     
-    if (data) {
-        // Add status badge
-        const statusClass = data.status === 'already_available' ? 'status-cached' : 'status-new';
-        const statusText = data.status === 'already_available' ? '📋 Retrieved from Database' : '🆕 Newly Processed';
-        content += `<div class="status-badge ${statusClass}">${statusText}</div>`;
+            if (data) {
+            // Add prominent status badge with immediate visual feedback
+            const statusClass = data.status === 'already_available' ? 'status-cached' : 'status-new';
+            const statusText = data.status === 'already_available' ? '📋 Retrieved from Database' : '🆕 Newly Processed';
+            const statusEmoji = data.status === 'already_available' ? '🔄' : '✨';
+            const statusSubtext = data.status === 'already_available' ? '(File was already processed)' : '(File processed for the first time)';
+            content += `
+                <div class="status-badge ${statusClass}">
+                    ${statusEmoji} ${statusText}
+                </div>
+                <div style="font-size: 0.9em; color: #666; margin-top: 5px;">
+                    ${statusSubtext}
+                </div>
+            `;
         
         // Add file information
         if (data.filename) {

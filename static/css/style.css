@@ -132,6 +132,17 @@ h1 {
 .loading {
     display: none;
     margin: 20px 0;
+    transition: all 0.3s ease;
+}
+
+.loading.show {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .spinner {
@@ -176,21 +187,29 @@ h1 {
 
 .status-badge {
     display: inline-block;
-    padding: 5px 15px;
-    border-radius: 20px;
-    font-size: 0.9em;
+    padding: 8px 20px;
+    border-radius: 25px;
+    font-size: 1em;
     font-weight: bold;
-    margin: 10px 0;
+    margin: 15px 0;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    animation: pulse 2s infinite;
 }
 
 .status-new {
-    background-color: #28a745;
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
     color: white;
 }
 
 .status-cached {
-    background-color: #17a2b8;
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
     color: white;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
 }
 
 .json-preview {
