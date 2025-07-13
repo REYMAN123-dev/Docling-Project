@@ -8,13 +8,25 @@ import os
 from app.main import app
 
 if __name__ == "__main__":
-    # Get port from environment variable (for Render) or default to 8000
-    port = int(os.getenv("PORT", 8000))
+    # Get port from environment variable (for Render) or default to 5000
+    port = int(os.getenv("PORT", 5000))
+    
+    # Check if we're running on Render (has PORT env var) or locally
+    is_render = os.getenv("PORT") is not None
+    
+    if is_render:
+        # Render deployment - bind to all interfaces
+        host = "0.0.0.0"
+        reload = False
+    else:
+        # Local development - bind to localhost
+        host = "127.0.0.1"
+        reload = True
     
     uvicorn.run(
-        "app.main:app",
-        host="127.0.0.1",  # Use localhost for local development
+        app,
+        host=host,
         port=port,
-        reload=False,  # Disable reload for testing
-        log_level="debug"
+        reload=reload,
+        log_level="info"
     ) 
